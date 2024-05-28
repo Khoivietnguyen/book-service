@@ -1,0 +1,8 @@
+<h3>List review</h3>
+<label>Available books:</label>
+<select>
+    <option value="">Select book</option>
+    {#for book in data:books}
+        <option id="{book.id}">{book.title}</option>
+    {/for}
+</select>
