@@ -1,6 +1,7 @@
 package com.example.page;
 
 import com.example.ReviewRepository;
+import com.example.ReviewResource;
 import com.example.client.BookClient;
 import com.example.dto.BookDTO;
 import com.example.model.Review;
@@ -40,22 +41,14 @@ public class ReviewPage {
 
     @GET
     public TemplateInstance showAllReviews() {
-        List<BookDTO> books = new ArrayList<BookDTO>();
+        List<BookDTO> books = ReviewResource.books;
         try {
             books = bookClient.getAllBooks();
         }
         catch (Exception e) {
-            logger.info(books);
-            System.out.println(books);
             System.out.println(e.getMessage());
-//            logger.debug("Cannot get list of books from book service, try to mock");
-//                        books = List.of(new BookDTO(1, "Understanding Quarkus", "Antonio", 200,2020),
-//                         new BookDTO(2, "Practising Quarkus", "Antonio", 300, 2020),
-//                         new BookDTO(3, "Effective Java", "Josh Bloch", 500,2001),
-//                    new BookDTO(4, "Thinking in Java", "Bruce Eckel", 324,1998));
         }
         return Templates.reviews(repository.listAll()).data("books", books);
     }
-
 
 }

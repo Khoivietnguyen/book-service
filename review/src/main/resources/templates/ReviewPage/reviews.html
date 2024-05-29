@@ -1,8 +1,109 @@
-<h3>List review</h3>
-<label>Available books:</label>
-<select>
-    <option value="">Select book</option>
-    {#for book in data:books}
-        <option id="{book.id}">{book.title}</option>
-    {/for}
-</select>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <title>Book reviews</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script lang="js">
+        $(() => {
+            const newReviewForm = $("#newReviewForm");
+            newReviewForm.submit(e => {
+                e.preventDefault();
+                form_data = new FormData(e.target);
+                console.log(Object.fromEntries(form_data.entries()));
+                $.ajax({
+                    url: "/api/reviews",
+                    method: "POST",
+                    data: newReviewForm.serialize()
+                    //dataType: 'json',
+                    //contentType: 'application/json',
+                    //data: JSON.stringify(Object.fromEntries(form_data.entries())),
+                }).done(function(response) {
+                    console.log("Success", response)
+                    hideForm();
+                    location.reload();
+                }).fail(function( jqXHR, textStatus ) {
+                    console.log("Failed!", textStatus, jqXHR)
+                    hideForm();
+                });
+            })
+        });
+
+        function getDetail(bookId) {
+            // alert("Get detail of book"  + bookId);
+            $.ajax({
+                url: "/api/reviews/book/" + bookId,
+                success: function(result){
+                    console.log(result);
+                    alert(JSON.stringify(result));
+            }});
+        }
+
+
+        function showForm() {
+            $("#new-review").css("height","250px");
+            $("#new-review").show()
+        }
+
+        function hideForm() {
+            $("#new-review").css("height","0px");
+            $("#new-review").hide()
+        }
+
+    </script>
+</head>
+<body>
+    <button onclick="showForm()">Add review</button>
+    <div id="new-review" style="display:none; height: 0px;">
+        <h3>New review</h3>
+        <form id="newReviewForm" method="POST">
+            <label>Detail review</label><br>
+            <textarea placeholder="Review..." name="review" class="contentInput" required></textarea> <br />
+            <label for="score">Score: </label><br /><input type="text" placeholder="Score" name="score" maxlength="3"
+                                                           required /> <br />
+            <label for="book">Book: </label><br />
+            <select name="bookId">
+                <option value="0">Select book</option>
+                {#for book in data:books}
+                    <option value="{book.id}">{book.title}</option>
+                {/for}
+            </select><br>
+            <input type="submit" value="Submit" />
+        </form>
+    </div>
+
+    {#if reviews.size > 0}
+        <div class="review-list" style="margin-top: 15px; max-height: 400px; width: 640px; margin:auto; ">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Review</th>
+                    <th scope="col">Score</th>
+                    <th scope="col">Book</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {#for review in reviews}
+                    <tr>
+                        <td>{review.review}</td>
+                        <td>{review.score}</td>
+                        <td>{review.bookId}</td>
+                        <td><button onclick="getDetail({review.bookId})">Details</button></td>
+                    </tr>
+                    {/for}
+                </tbody>
+            </table>
+        </div>
+    {#else}
+        <h3 style="margin-top: 20px;">No review available, click button above to add new</h3>
+    {/if}
+
+</body>
+
+</html>
+
+
+

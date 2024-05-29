@@ -17,4 +17,5 @@ public class Review extends PanacheEntity {
 
     @Column(name = "book_id")
     public Integer bookId;
+
 }
