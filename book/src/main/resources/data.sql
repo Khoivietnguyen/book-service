@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS book_db;
+CREATE DATABASE book_db;
 create table if not exists t_books (id bigint not null, author varchar(100) not null, nb_of_pages integer, year_pub integer, title varchar(100) not null, primary key (id));
 -- create sequence if not exists t_books_SEQ start with 1 increment by 1;
 
